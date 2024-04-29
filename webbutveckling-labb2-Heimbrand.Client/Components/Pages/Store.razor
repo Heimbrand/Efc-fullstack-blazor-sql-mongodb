@@ -1,0 +1,134 @@
+﻿@page "/Store"
+@using Labb2WebbTemplate.Common.Dtos
+@using Labb2WebbTemplate.Common.Entities
+@using Labb2WebbTemplate.Common.Interfaces
+@using MudBlazor.Extensions
+@inject IProductService<ProductDto> ProductService
+@inject ICategoryService<CategoryDto> CategoryService
+@inject IOrderService<OrderDto> OrderService
+@inject IOrderProductService<OrderProductDto> OrderProductService
+
+<EditForm Model="@NewOrder" OnValidSubmit="PlaceOrder">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Customer ID" @bind-Value="NewOrder.CustomerId" />
+                    <MudTextField Label="Date" @bind-Value="NewOrder.DateTime"/>
+                    <MudSelect Label="Product" @bind-Value="SelectedProductId">
+                        @foreach (var product in Products)
+                        {
+                            <MudSelectItem Value="@product.Id">@product.Name - @product.Price</MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTextField Label="Quantity" @bind-Value="Quantity" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Success">Place Order</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+      
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+<MudPaper>
+    <MudSimpleTable Dense="true" Hover="@hover" Bordered="@bordered" Striped="@striped" Style="overflow-x: auto;">
+        <thead>
+        <tr>
+            @foreach (var h in headings)
+            {
+                <th>@h</th>
+            }
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var products in Products)
+        {
+            <tr>
+               
+                    <td>@products.Id</td> 
+                    <td>@products.Name</td> 
+                    <td>@products.Price</td> 
+                    <td>@products.Description</td> 
+                    <td>@products.StockBalance</td> 
+                    <td>@products.Status</td>
+                 
+            </tr>
+        }
+        </tbody>
+    </MudSimpleTable>
+    <MudToolBar>
+        <MudSwitch @bind-Checked="@hover" Color="Color.Primary">Hover</MudSwitch>
+        <MudSwitch @bind-Checked="@dense" Color="Color.Secondary" Disabled="true">Dense</MudSwitch>
+        <MudSwitch @bind-Checked="@striped" Color="Color.Tertiary">Striped</MudSwitch>
+        <MudSwitch @bind-Checked="@bordered" Color="Color.Warning">Bordered</MudSwitch>
+    </MudToolBar>
+</MudPaper>
+
+@code {
+
+    private int SelectedProductId { get; set; }
+    private int Quantity { get; set; }
+    private OrderDto NewOrder { get; set; } = new OrderDto();
+    private List<ProductDto> Products { get; set; } = new();
+    private List<CategoryDto> Categories { get; set; } = new();
+
+    private string[] headings = new[] { "ID", "Name", "Price", "Description", "Stockbalance", "Status" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        
+        Products.AddRange(await ProductService.GetAllProducts());
+        Categories.AddRange(await CategoryService.GetAllCategories());
+    }
+
+    private async Task PlaceOrder()
+    {
+        var order = new OrderDto
+        {
+            CustomerId = NewOrder.CustomerId,
+            DateTime = NewOrder.DateTime.ToUniversalTime(),
+            Products = new List<OrderProductDto> 
+            {
+                new() { ProductId = SelectedProductId, Quantity = Quantity }
+            }
+        };
+
+        var orderProducts = order.Products.Select(op => new OrderProduct
+        {
+            ProductId = op.ProductId,
+            Quantity = op.Quantity
+        }).ToList();
+
+        NewOrder.Products = order.Products;
+
+        var orderProductDtos = orderProducts.Select(op => new OrderProductDto
+        {
+            ProductId = op.ProductId,
+            Quantity = op.Quantity
+        }).ToList();
+
+        NewOrder.Products = orderProductDtos;
+
+        await OrderService.CreateOrder(NewOrder);
+        
+        NewOrder = new OrderDto();
+        SelectedProductId = 0;
+        Quantity = 0;
+        
+    }
+    bool success;
+    public bool Dense { get; set; } = true;
+    public bool Clickable { get; set; } = true;
+    public bool Gutters { get; set; } = true;
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+}
+
+

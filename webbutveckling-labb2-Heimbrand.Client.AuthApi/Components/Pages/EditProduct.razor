@@ -1,0 +1,122 @@
+﻿@page "/EditProduct"
+@using Labb2WebbTemplate.Common.Dtos
+@using Labb2WebbTemplate.Common.Interfaces
+@rendermode InteractiveServer
+@inject IProductService<ProductDto> ProductService
+<PageTitle>Edit Customer</PageTitle>
+
+
+
+<EditForm Model="@UpdateProduct" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Id"
+                                  @bind-Value="UpdateProduct.Id" For="@(() => UpdateProduct.Id)" />
+                    <MudTextField Label="Category Id" HelperText="Max. 15 characters"
+                                  @bind-Value="UpdateProduct.CategoryId" For="@(() => UpdateProduct.CategoryId)" />
+                    <MudTextField Label="Name" Class="mt-3"
+                                  @bind-Value="UpdateProduct.Name" For="@(() => UpdateProduct.Name)" />
+                    <MudTextField Label="Price" Class="mt-3"
+                                  @bind-Value="UpdateProduct.Price" For="@(() => UpdateProduct.Price)" />
+                    <MudTextField Label="Description" Class="mt-3"
+                                  @bind-Value="UpdateProduct.Description" For="@(() => UpdateProduct.Description)" />
+                    <MudTextField Label="In stock? True for yes, false for no" Class="mt-3"
+                                  @bind-Value="UpdateProduct.Status" For="@(() => UpdateProduct.Status)" />
+                    <MudTextField Label="Stock balance" Class="mt-3"
+                                  @bind-Value="UpdateProduct.StockBalance" For="@(() => UpdateProduct.StockBalance)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Customer Successfully Updated!</MudText>
+
+                    <MudList>
+                        <MudListItem Icon="@Icons.Material.Filled.ShoppingBag" IconColor="Color.Primary">
+                            ID: @UpdateProduct.Id, <br>
+                            Category ID: @UpdateProduct.CategoryId, <br>
+                            Name: @UpdateProduct.Name, <br>
+                            Price: @UpdateProduct.Price:-, <br>
+                            Description: @UpdateProduct.Description, <br>
+                            Stock balance: @UpdateProduct.StockBalance, <br>
+                            In Stock?: @UpdateProduct.Status <br>
+                        </MudListItem>
+                    </MudList>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+<MudPaper>
+    <MudList>
+        <h4>Existing products and their ID:s</h4>
+        @foreach (var product in Products)
+        {
+            <MudListItem>
+                ID: @product.Id <br>
+                Category ID: @product.CategoryId <br>
+                Name: @product.Name <br>
+                Price: @product.Price:- <br>
+                Description: @product.Description <br>
+                @if (@product.Status)
+                {
+                    <p>In Stock?: Yes</p>
+                    <p> Stock balance: @product.StockBalance <br></p>
+                }
+                @if (!@product.Status)
+                {
+                    <p>In Stock?: No</p>
+                }
+                -------------------
+            </MudListItem>
+        }
+    </MudList>
+</MudPaper>
+
+@code {
+
+    private ProductDto UpdateProduct { get; set; } = new();
+    private List<ProductDto> Products { get; set; } = new();
+
+    private async Task EditExistingProduct()
+    {
+        await ProductService.UpdateProduct(UpdateProduct);
+        StateHasChanged();
+    }
+
+    private void OnValidSubmit(EditContext context)
+    {
+        success = true;
+        EditExistingProduct();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Products.AddRange(await ProductService.GetAllProducts());
+    }
+
+
+
+    bool success;
+}

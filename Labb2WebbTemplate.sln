@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34601.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webbutveckling-labb2-Heimbrand.API", "webbutveckling-labb2-Heimbrand.API\webbutveckling-labb2-Heimbrand.API.csproj", "{89B37E35-E172-4BF1-8E50-D8B2422CDFF5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webbutveckling-labb2-Heimbrand.DB", "webbutveckling-labb2-Heimbrand.DB\webbutveckling-labb2-Heimbrand.DB.csproj", "{CF4409D1-E973-442C-979D-F4D401D41F02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{63D5E848-DF5B-43E6-A9C9-0C64559DAE6F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{468307AC-6812-440B-9140-4694AB07615D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Labb2WebbTemplate.Common", "Common\Labb2WebbTemplate.Common.csproj", "{098D3947-1F4C-476B-B42C-AC49064CB5A9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "webbutveckling-labb2-Heimbrand.Client.AuthApi", "webbutveckling-labb2-Heimbrand.Client.AuthApi\webbutveckling-labb2-Heimbrand.Client.AuthApi.csproj", "{8D7CB493-C674-4528-9883-F93564070868}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89B37E35-E172-4BF1-8E50-D8B2422CDFF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89B37E35-E172-4BF1-8E50-D8B2422CDFF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89B37E35-E172-4BF1-8E50-D8B2422CDFF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89B37E35-E172-4BF1-8E50-D8B2422CDFF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF4409D1-E973-442C-979D-F4D401D41F02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF4409D1-E973-442C-979D-F4D401D41F02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF4409D1-E973-442C-979D-F4D401D41F02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF4409D1-E973-442C-979D-F4D401D41F02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{098D3947-1F4C-476B-B42C-AC49064CB5A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{098D3947-1F4C-476B-B42C-AC49064CB5A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{098D3947-1F4C-476B-B42C-AC49064CB5A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{098D3947-1F4C-476B-B42C-AC49064CB5A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D7CB493-C674-4528-9883-F93564070868}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D7CB493-C674-4528-9883-F93564070868}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D7CB493-C674-4528-9883-F93564070868}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D7CB493-C674-4528-9883-F93564070868}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{89B37E35-E172-4BF1-8E50-D8B2422CDFF5} = {63D5E848-DF5B-43E6-A9C9-0C64559DAE6F}
+		{CF4409D1-E973-442C-979D-F4D401D41F02} = {63D5E848-DF5B-43E6-A9C9-0C64559DAE6F}
+		{8D7CB493-C674-4528-9883-F93564070868} = {468307AC-6812-440B-9140-4694AB07615D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C1B6B90B-79D7-4B88-8B68-529C49649AE3}
+	EndGlobalSection
+EndGlobal

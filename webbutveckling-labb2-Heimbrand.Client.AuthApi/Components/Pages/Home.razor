@@ -1,0 +1,81 @@
+﻿@page "/"
+@using webbutveckling_labb2_Heimbrand.Client.AuthApi.Data
+@using Microsoft.AspNetCore.Identity
+@using webbutveckling_labb2_Heimbrand.Client.AuthApi.Components.Account
+@rendermode InteractiveServer
+@inject UserManager<ApplicationUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager NavigationManager
+@inject IdentityRedirectManager RedirectManager
+
+<PageTitle>Home</PageTitle>
+
+@if (IsUserWithoutRole())
+{
+    <MudCard>
+        <MudCardActions>
+            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary" OnClick="AssignUserRole">Click to become User</MudButton>
+        </MudCardActions>
+        Du får logga ut och in efter att ha klickat på knappen, får fan inte till att sidan uppdateras.
+    </MudCard>
+}
+else
+{
+    <h4>Just registered an account?</h4>
+    <br />
+    <h4>Head over to "Edit Customer" to finalize your profile!</h4>
+}
+
+
+
+
+
+@code
+{
+    private async Task AssignAdminRole()
+    {
+        var user = await UserManager.FindByEmailAsync(email: "admin.admin@admin.se");
+
+        var result = await UserManager.AddToRoleAsync(user, "Admin");
+
+
+    }
+
+    bool IsUserWithoutRole()
+    {
+        var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            if (user.IsInRole("Admin") || user.IsInRole("User"))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        AssignAdminRole();
+
+    }
+
+    private async Task AssignUserRole()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            if (user.IsInRole("Admin"))
+            {
+                return;
+            }
+            var AutUser = await UserManager.FindByEmailAsync(email: user.Identity.Name);
+            var result = await UserManager.AddToRoleAsync(AutUser, "User");
+        }
+        StateHasChanged();
+    }
+}

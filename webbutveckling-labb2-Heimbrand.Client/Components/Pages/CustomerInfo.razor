@@ -1,0 +1,139 @@
+﻿@page "/CustomerInfo"
+@using Labb2WebbTemplate.Common.Interfaces
+@using Labb2WebbTemplate.Common.Dtos
+@rendermode InteractiveServer
+@inject ICustomerService<CustomerDto> CustomerService
+@inject IOrderService<OrderDto> OrderService
+
+
+
+
+<MudSlider @bind-Value="spacing" Min="0" Max="10" Color="Color.Info" Class="mb-6">Spacing: @spacing.ToString()</MudSlider>
+
+    <MudGrid Spacing="@spacing" Justify="Justify.Center">
+        <MudItem>
+            <MudPaper>
+                <MudList Clickable="@Clickable" Dense="@Dense" DisableGutters="@Gutters">
+                    @foreach (var customer in Customers)
+                {
+                    <MudListItem Icon="@Icons.Material.Filled.People" IconColor="Color.Primary">
+                        Id: @customer.Id <br>
+                        Namn: @customer.FirstName <br>
+                        @customer.LastName <br>
+                        Email: @customer.Email <br>
+                        Phone: @customer.Phone <br>
+                        Address: @customer.Adress <br>
+                        City: @customer.City <br>
+                        Zip: @customer.Zip <br>
+                        Country: @customer.Country <br>
+                    </MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+    <MudItem>
+        <MudPaper>
+            <MudTextField Label="Enter the Customers ID" @bind-Value="CustomerId" />
+            <MudButton ButtonType="ButtonType.Button" OnClick="async()=>{await FetchOrderProductsByCostumerId();}" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Fetch info</MudButton>
+            <MudList>
+                @if (OrderInfo is not null && OrderInfo.Orders is not null)
+                {
+                    @foreach (var order in OrderInfo.Orders)
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.ShoppingCart">
+                            <h4>Order ID: @order.Id</h4>
+                            <ul>
+                                @foreach (var product in order.Products)
+                                {
+                                    <li>
+                                        Product ID: @product.ProductId,
+                                        Quantity: @product.Quantity
+                                    </li>
+                                }
+                            </ul>
+                        </MudListItem>
+                    }
+                }
+                else
+                {
+                    <MudListItem>No order found or orders not loaded</MudListItem>
+                }
+            </MudList>
+        </MudPaper>
+    </MudItem>
+    <MudItem>
+        <MudPaper>
+            <MudTextField Label="Enter customer's email" @bind-Value="Email" />
+            <MudButton ButtonType="ButtonType.Button" OnClick="async()=>{await FetchCustomer();}" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Get Customer</MudButton>
+            @if (SelectedCustomer != null)
+            {
+                <MudList>
+                    Click "Get Customer" to fetch customer info
+
+                    <MudListItem>ID: @SelectedCustomer.Id</MudListItem>
+                        <MudListItem>Name: @SelectedCustomer.FirstName @SelectedCustomer.LastName</MudListItem>
+                        <MudListItem>Email: @SelectedCustomer.Email</MudListItem>
+                        <MudListItem>Address: @SelectedCustomer.Adress</MudListItem>
+                        <MudListItem>City: @SelectedCustomer.City</MudListItem>
+                        <MudListItem>Country: @SelectedCustomer.Country</MudListItem>
+                        <MudListItem>Phone number: @SelectedCustomer.Phone</MudListItem>
+                        <MudListItem>Zip code: @SelectedCustomer.Zip</MudListItem>
+                        <MudListItem>Orders: @SelectedCustomer.Orders</MudListItem>
+                    </MudList>
+            }
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+
+    private List<CustomerDto> Customers { get; set; } = new();
+
+    private int CustomerOrderById { get; set; }
+    private IEnumerable<OrderDto> Orders { get; set; }
+
+    private int OrderId { get; set; }
+    private OrderDto Order { get; set; } = new();
+
+    private CustomerDto? SelectedCustomer { get; set; } = new();
+    private string? Email { get; set; }
+
+    private int CustomerId { get; set; }
+    private CustomerDto OrderInfo { get; set; } = new();
+
+    private async Task FetchOrderProductsByCostumerId()
+    {
+        OrderInfo = await CustomerService.GetOrderProductsByCostumerId(CustomerId);
+    }
+
+    private async Task FetchOrdersById()
+    {
+        var order = Order = await OrderService.GetOrderById(OrderId);
+
+    }
+
+    private async Task FetchCustomerOrders()
+    {
+        Orders = await OrderService.GetOrdersByCustomerId(CustomerOrderById);
+
+    }
+
+    private async Task FetchCustomer()
+    {
+        if (Email != null)
+        {
+            var users = SelectedCustomer = await CustomerService.GetCustomerByEmail(Email);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Customers.AddRange(await CustomerService.GetAllCustomers());
+    }
+
+    bool success;
+    private int spacing { get; set; } = 2;
+    private bool Dense { get; set; } = true;
+    private bool Clickable { get; set; } = true;
+    private bool Gutters { get; set; } = true;
+} 

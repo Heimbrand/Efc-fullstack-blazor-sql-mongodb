@@ -1,0 +1,115 @@
+﻿@page "/ProductInfo"
+@using Labb2WebbTemplate.Common.Interfaces
+@using Labb2WebbTemplate.Common.Dtos
+@rendermode InteractiveServer
+@inject IProductService<ProductDto> ProductService
+
+
+
+
+<MudSlider @bind-Value="spacing" Min="0" Max="10" Color="Color.Info" Class="mb-6">Spacing: @spacing.ToString()</MudSlider>
+
+    <MudGrid Spacing="@spacing" Justify="Justify.Center">
+        <MudItem>
+            <MudPaper>
+                <MudTextField Label="Enter a products ID" @bind-Value="ProductId" />
+                <MudButton ButtonType="ButtonType.Button" OnClick="async()=>{await FetchProductsById();}" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Get product</MudButton>
+                @if (ProductsById is not null)
+            {
+
+
+                <MudList>
+
+                    <MudListItem>
+
+                        Name: @ProductsById.Name <br />
+                        Price: @ProductsById.Price <br />
+                        Description: @ProductsById.Description <br />
+                        @if (ProductsById.Status)
+                        {
+                            <p>In Stock?: Yes</p>
+                            @ProductsById.StockBalance
+                        }
+                        @if (!ProductsById.Status)
+                        {
+                            <p>In Stock?: No</p>
+                        }
+
+                    </MudListItem>
+
+                </MudList>
+            }
+            else
+            {
+                <MudList>
+                    <MudListItem>
+                        No product found
+                    </MudListItem>
+                </MudList>
+            }
+        </MudPaper>
+    </MudItem>
+
+    <MudItem>
+        <MudPaper>
+            <MudButton ButtonType="ButtonType.Button" OnClick="async()=>{await FetchAllProducts();}" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Click to list all products</MudButton>
+           
+            @foreach (var product in AllProducts)
+            {
+                <MudList>
+                    <MudListItem>
+                        Name: @product.Name <br />
+                        Price: @product.Price <br />
+                        Description: @product.Description <br />
+                        @if (product.Status)
+                        {
+                            <p>In Stock?: Yes</p>
+                            @product.StockBalance
+                        }
+                        @if (!product.Status)
+                        {
+                            <p>In Stock?: No</p>
+                        }
+                    </MudListItem>
+                </MudList>
+            }
+
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+
+
+
+
+
+@code
+{
+    private List<ProductDto> AllProducts { get; set; } = new();
+    private ProductDto ProductsById { get; set; } = new();
+    private ProductDto ProductsByName { get; set; } = new();
+    private int ProductId { get; set; }
+    private string ProductName { get; set; }
+
+    private async Task FetchProductsById()
+    {
+
+        var product = ProductsById = await ProductService.GetProductById(ProductId);
+
+
+
+    }
+    private async Task FetchAllProducts()
+    {
+        AllProducts.AddRange(await ProductService.GetAllProducts());
+        StateHasChanged();
+    }
+
+    public int spacing { get; set; } = 2;
+}
+
+
+
+
+
+

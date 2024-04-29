@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-webbutveckling-labb2-Heimbrand.Client.AuthApi-775900d9-9a15-49db-90fd-8aee99a65bad</UserSecretsId>
+    <RootNamespace>webbutveckling-labb2-Heimbrand.Client.AuthApi</RootNamespace>
+    <AssemblyName>$(AssemblyName.Replace(' ', '_'))</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.3" />
+    <PackageReference Include="MudBlazor" Version="6.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Labb2WebbTemplate.Common.csproj" />
+    <ProjectReference Include="..\webbutveckling-labb2-Heimbrand.API\webbutveckling-labb2-Heimbrand.API.csproj" />
+    <ProjectReference Include="..\webbutveckling-labb2-Heimbrand.DB\webbutveckling-labb2-Heimbrand.DB.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Pages\EditProduct.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Components\Pages\EditProduct.razor" />
+    <_ContentIncludedByDefault Remove="Components\Pages\ProductInfo.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Components\Pages\ProductInfo.razor" />
+  </ItemGroup>
+
+</Project>

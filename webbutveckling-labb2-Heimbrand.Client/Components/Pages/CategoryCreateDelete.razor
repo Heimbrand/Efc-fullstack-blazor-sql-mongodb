@@ -1,0 +1,90 @@
+﻿@page "/CategoryCreateDelete"
+@using Labb2WebbTemplate.Common.Dtos
+@using Labb2WebbTemplate.Common.Interfaces
+@rendermode InteractiveServer
+@inject ICategoryService<CategoryDto> CategoryService
+
+
+
+<EditForm Model="@NewCategory" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Enter the categories name" 
+                                  @bind-Value="NewCategory.Name" For="@(() => NewCategory.Name)" />
+                 
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large">Register </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Category Successfully Registered!</MudText>
+
+                    <MudList>
+                        <MudListItem Icon="@Icons.Material.Filled.People" IconColor="Color.Primary">
+                            Name: @NewCategory.Name <br>
+                        </MudListItem>
+                    </MudList>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly and click the register button to register a new customer.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+<MudPaper>
+    <MudList>
+        <h4>Enter a Categories ID to delete it from the store and the database</h4>
+        <MudTextField Label="Enter the Customers ID" @bind-Value="CategoryId" />
+        <MudButton ButtonType="ButtonType.Button" OnClick="async () => { await RemoveCategory(); }" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Delete Category</MudButton>
+    </MudList>
+</MudPaper>
+
+
+
+
+
+@code {
+    private CategoryDto NewCategory = new();
+    private int CategoryId;
+
+    private async Task CreateCategory()
+    {
+        await CategoryService.AddCategory(NewCategory);
+    }
+
+    private async Task RemoveCategory()
+    {
+        await CategoryService.DeleteCategory(CategoryId);
+    }
+
+    private async Task OnValidSubmit()
+    {
+        success = true;
+        await CreateCategory();
+        StateHasChanged();
+    }
+    
+    
+    
+    
+    private bool success;
+    
+}

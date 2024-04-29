@@ -1,0 +1,34 @@
+﻿
+
+<MudPaper Width="250px" Class="d-inline-flex py-3" Elevation="0" Style="margin">
+    <MudNavMenu Class="mud-width-full">
+       
+        <MudDivider Class="my-2" />
+        <MudNavLink Href="/" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+        <MudNavLink Href="/Store" Icon="@Icons.Material.Filled.Store">Store</MudNavLink>
+        <MudNavGroup Title="Customer Settings" Icon="@Icons.Material.Filled.Settings" Expanded="@Expanded" ExpandedChanged="@ToggleExpanded">
+            <MudNavLink Href="/CustomerCreateDelete" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Customer Create/Delete</MudNavLink>
+            <MudNavLink Href="/EditCustomer" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Edit Customer</MudNavLink>
+            <MudNavLink Href="/CustomerInfo" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Customer info</MudNavLink>
+        </MudNavGroup>
+
+        <MudNavGroup Title="Product Settings" Icon="@Icons.Material.Filled.Settings" Expanded="@Expanded">
+            <MudNavLink Href="/ProductCreateDelete" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Product Create/Delete</MudNavLink>
+            <MudNavLink Href="/CategoryCreateDelete" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Category Create/Delete</MudNavLink>
+            <MudNavLink Href="/EditProduct" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Edit Product</MudNavLink>
+            <MudNavLink Href="/ProductInfo" Icon="@Icons.Material.Filled.Settings" IconColor="Color.Success">Product Info</MudNavLink>
+        </MudNavGroup>
+    </MudNavMenu>
+</MudPaper>
+
+@code
+{
+    private bool Expanded { get; set; } = true;
+
+    private void ToggleExpanded()
+    {
+        Expanded = !Expanded;
+    }
+
+
+}

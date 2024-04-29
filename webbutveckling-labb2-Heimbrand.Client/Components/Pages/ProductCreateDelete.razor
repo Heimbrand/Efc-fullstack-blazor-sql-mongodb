@@ -1,0 +1,118 @@
+﻿@page "/ProductCreateDelete"
+@using Labb2WebbTemplate.Common.Dtos
+@using Labb2WebbTemplate.Common.Interfaces
+@rendermode InteractiveServer
+@inject IProductService<ProductDto> ProductService
+@inject ICategoryService<CategoryDto> CategoryService
+<PageTitle>Product Creation</PageTitle>
+
+<EditForm Model="@NewProduct" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+
+                    <MudTextField Label="Name" Class="mt-3"
+                                  @bind-Value="NewProduct.Name" For="@(() => NewProduct.Name)" />
+                    <MudTextField Label="Price" Class="mt-3"
+                                  @bind-Value="NewProduct.Price" For="@(() =>NewProduct.Price)" />
+                    <MudTextField Label="Category Id" Class="mt-3"
+                                  @bind-Value="NewProduct.CategoryId" For="@(() =>NewProduct.CategoryId)" />
+                    <MudTextField Label="Description" Class="mt-3"
+                                  @bind-Value="NewProduct.Description" For="@(() =>NewProduct.Description)" />
+                    <MudTextField Label="Stock balance" Class="mt-3"
+                                  @bind-Value="NewProduct.StockBalance" For="@(() =>NewProduct.StockBalance)" />
+                    <MudTextField Label="In stock? true for yes, false for no" Class="mt-3"
+                                  @bind-Value="NewProduct.Status" For="@(() =>NewProduct.Status)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large">Create</MudButton>
+                </MudCardActions>
+            </MudCard>
+            <MudPaper>
+                <MudList>
+                    <h4>Below are the existing categories</h4>
+                    @foreach (var category in Categories)
+                    {
+                        <MudListItem Icon="@Icons.Material.Filled.Category">
+                            ID: @category.Id <br>
+                            Name: @category.Name <br>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Product Successfully Created!</MudText>
+                    <MudList>
+                        <MudListItem Icon="@Icons.Material.Filled.People" IconColor="Color.Primary">
+                            CategoryId: @NewProduct.CategoryId, <br>
+                            Name: @NewProduct.Name, <br>
+                            Price: @NewProduct.Price:-, <br>
+                            Description: @NewProduct.Description, <br>
+                            Stock balance: @NewProduct.StockBalance, <br>
+                            In stock?: @NewProduct.Status <br>
+                        </MudListItem>
+                    </MudList>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly and click the register button to register a new customer.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+<MudPaper>
+    <MudList>
+        <h4>Enter a products ID to delete it from the store and the database</h4>
+        <MudTextField Label="Enter the products ID" @bind-Value="ProductId"/>
+        <MudButton ButtonType="ButtonType.Button" OnClick="async () => { await RemoveProduct(); }" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Delete Product</MudButton>
+    </MudList>
+</MudPaper>
+
+
+@code {
+
+    private ProductDto NewProduct { get; set; } = new();
+    private List<CategoryDto> Categories { get; set; } = new();
+    private int ProductId { get; set; } = new();
+
+    private async Task RemoveProduct()
+    {
+        await ProductService.DeleteProduct(ProductId); 
+    }
+
+    private async Task RegisterProduct()
+    {
+        await ProductService.AddProduct(NewProduct);
+        
+    }
+
+    private void OnValidSubmit(EditContext obj)
+    {
+        success = true;
+        RegisterProduct();
+        StateHasChanged();
+    }
+    bool success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categories.AddRange(await CategoryService.GetAllCategories());
+    }
+}
+
+

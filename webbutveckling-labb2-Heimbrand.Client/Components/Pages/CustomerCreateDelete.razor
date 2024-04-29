@@ -1,0 +1,106 @@
+﻿@page "/CustomerCreateDelete"
+@rendermode InteractiveServer
+@inject ICustomerService<CustomerDto> CustomerService
+@using Labb2WebbTemplate.Common.Dtos
+@using Labb2WebbTemplate.Common.Interfaces
+<PageTitle>Customer Creation</PageTitle>
+
+<EditForm Model="@NewCustomer" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="First name" HelperText="Max. 8 characters"
+                                  @bind-Value="NewCustomer.FirstName" For="@(() => NewCustomer.FirstName)" />
+                    <MudTextField Label="Last Name" Class="mt-3"
+                                  @bind-Value="NewCustomer.LastName" For="@(() => NewCustomer.LastName)" />
+                    <MudTextField Label="Email" Class="mt-3"
+                                  @bind-Value="NewCustomer.Email" For="@(() => NewCustomer.Email)" />
+                    <MudTextField Label="Phone" Class="mt-3"
+                                  @bind-Value="NewCustomer.Phone" For="@(() =>NewCustomer.Phone)" />
+                    <MudTextField Label="Adress" Class="mt-3"
+                                  @bind-Value="NewCustomer.Adress" For="@(() =>NewCustomer.Adress)" />
+                    <MudTextField Label="City" Class="mt-3"
+                                  @bind-Value="NewCustomer.City" For="@(() =>NewCustomer.City)" />
+                    <MudTextField Label="Zip" Class="mt-3"
+                                  @bind-Value="NewCustomer.Zip" For="@(() =>NewCustomer.Zip)" />
+                    <MudTextField Label="Country" Class="mt-3"
+                                  @bind-Value="NewCustomer.Country" For="@(() =>NewCustomer.Country)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" IconColor="Color.Primary" Size="Size.Large">Register </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Customer Successfully Registered!</MudText>
+
+                    <MudList>
+                        <MudListItem Icon="@Icons.Material.Filled.Category" IconColor="Color.Primary">
+                            Namn: @NewCustomer.FirstName <br>
+                            @NewCustomer.LastName <br>
+                            Email: @NewCustomer.Email <br>
+                            Phone: @NewCustomer.Phone <br>
+                            Address: @NewCustomer.Adress <br>
+                            City: @NewCustomer.City <br>
+                            Zip: @NewCustomer.Zip <br>
+                            Country: @NewCustomer.Country <br>
+                        </MudListItem>
+                    </MudList>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly and click the register button to register a new customer.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+<MudPaper>
+    <MudList>
+        <h4>Enter a Customers ID to delete it from the store and the database</h4>
+        <MudTextField Label="Enter the Customers ID" @bind-Value="CustomerId" />
+        <MudButton ButtonType="ButtonType.Button" OnClick="async () => { await RemoveCustomer(); }" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">Delete Customer</MudButton>
+    </MudList>
+</MudPaper>
+@code {
+
+    private CustomerDto NewCustomer { get; set; } = new();
+    private int CustomerId { get; set; }
+
+    private async Task RemoveCustomer()
+    {
+        await CustomerService.DeleteCustomer(CustomerId);
+    }
+
+    
+    private async Task RegisterCustomer()
+    {
+        await CustomerService.AddCustomer(NewCustomer);
+    }
+
+
+    private void OnValidSubmit(EditContext context)
+    {
+        success = true;
+        RegisterCustomer();
+        StateHasChanged();
+    }
+
+    bool success;
+}
+
+
+

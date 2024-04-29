@@ -1,0 +1,93 @@
+﻿@page "/EditCustomer"
+
+@rendermode InteractiveServer
+@inject ICustomerService<CustomerDto> CustomerService
+@using Labb2WebbTemplate.Common.Dtos
+@using Labb2WebbTemplate.Common.Interfaces
+
+
+<PageTitle>Edit Customer</PageTitle>
+
+<EditForm Model="@UpdateCustomer" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Id" 
+                                  @bind-Value="UpdateCustomer.Id" For="@(() => UpdateCustomer.Id)" />
+                    <MudTextField Label="First name" HelperText="Max. 15 characters"
+                                  @bind-Value="UpdateCustomer.FirstName" For="@(() => UpdateCustomer.FirstName)"/>
+                    <MudTextField Label="Last Name" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.LastName" For="@(() => UpdateCustomer.LastName)"/>
+                    <MudTextField Label="Email" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.Email" For="@(() => UpdateCustomer.Email)"/>
+                    <MudTextField Label="Phone" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.Phone" For="@(() => UpdateCustomer.Phone)"/>
+                    <MudTextField Label="Adress" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.Adress" For="@(() => UpdateCustomer.Adress)"/>
+                    <MudTextField Label="City" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.City" For="@(() => UpdateCustomer.City)"/>
+                    <MudTextField Label="Zip" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.Zip" For="@(() => UpdateCustomer.Zip)"/>
+                    <MudTextField Label="Country" Class="mt-3"
+                                  @bind-Value="UpdateCustomer.Country" For="@(() => UpdateCustomer.Country)"/>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Update</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" sm="5">
+            <MudPaper Class="pa-4 mud-height-full">
+                <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+                @if (success)
+                {
+                    <MudText Color="Color.Success">Customer Successfully Updated!</MudText>
+
+                    <MudList>
+                        <MudListItem Icon="@Icons.Material.Filled.People" IconColor="Color.Primary">
+                            Namn: @UpdateCustomer.FirstName <br>
+                            @UpdateCustomer.LastName <br>
+                            Email: @UpdateCustomer.Email <br>
+                            Phone: @UpdateCustomer.Phone <br>
+                            Address: @UpdateCustomer.Adress <br>
+                            City: @UpdateCustomer.City <br>
+                            Zip: @UpdateCustomer.Zip <br>
+                            Country: @UpdateCustomer.Country <br>
+                        </MudListItem>
+                    </MudList>
+                }
+                else
+                {
+                    <MudText Color="@Color.Error">
+                        <ValidationSummary />
+                    </MudText>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+@code {
+
+    private CustomerDto UpdateCustomer { get; set; } = new();
+
+    private async Task EditExistingCustomer()
+    {
+        await CustomerService.UpdateCustomer(UpdateCustomer);
+        StateHasChanged();
+    }
+    bool success;
+    private void OnValidSubmit(EditContext context)
+    {
+        success = true;
+        EditExistingCustomer();
+        StateHasChanged();
+    }
+
+}

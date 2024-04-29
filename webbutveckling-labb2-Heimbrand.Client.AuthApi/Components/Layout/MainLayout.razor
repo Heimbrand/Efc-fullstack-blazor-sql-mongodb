@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+
+<MudThemeProvider IsDarkMode="true" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Elevation="1" Color="Color.Dark">
+
+        @if (IsUserAdmin())
+        {
+            <MudText Typo="Typo.body2">Olles E-handel. <br/> Inloggad som: Admin</MudText>
+        }
+       else if (IsUserUser())
+        {
+            <MudText Typo="Typo.body2">Olles E-handel. <br/> Inloggad som: Kund</MudText>
+        }
+        else
+        {
+            <MudText Typo="Typo.body2">Olles E-handel. <br/> Inget konto inloggat</MudText>
+        }
+
+        <MudSpacer />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu></NavMenu>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = true;
+
+    bool IsUserAdmin()
+    {
+        var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            if (user.IsInRole("Admin"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    bool IsUserUser()
+    {
+        var authState = AuthenticationStateProvider.GetAuthenticationStateAsync().Result;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            if (user.IsInRole("User"))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+}
+
